@@ -1,6 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 
@@ -9,6 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private authService: AuthService,
   ) {}
 
   async create(
@@ -44,5 +46,24 @@ export class UserService {
     hashedPassword: string,
   ): Promise<boolean> {
     return await bcrypt.compare(password, hashedPassword);
+  }
+
+  async getValidUserToken(user: User): Promise<string> {
+    if (user.token) {
+      const validatedToken = this.authService.validateToken(user.token);
+      if (validatedToken) {
+        const now = Date.now() / 1000;
+        if (validatedToken.exp > now) {
+          return user.token;
+        }
+      }
+    }
+
+    const newToken = this.authService.generateToken(user);
+    await this.userRepository.update(user.id, {
+      token: newToken,
+    });
+
+    return newToken;
   }
 }

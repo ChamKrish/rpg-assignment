@@ -1,6 +1,13 @@
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  NotFoundException,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { JwtAuthGaurd } from 'src/auth/guards/jwt-auth.guard';
 import { LoginInput, RegisterInput } from '../auth/dto/auth.input';
+import { User } from './entity/user.entity';
 import { AuthPayload, UserModel } from './model/user.model';
 import { UserService } from './user.service';
 
@@ -16,8 +23,10 @@ export class UserResolver {
       input.password,
     );
 
+    const token = await this.userService.getValidUserToken(user);
+
     return {
-      token: 'token', // Update with jwt token
+      token,
       user: {
         id: user.id,
         userName: user.userName,
@@ -43,8 +52,10 @@ export class UserResolver {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    const token = await this.userService.getValidUserToken(user);
+
     return {
-      token: 'token', // Update with jwt token
+      token,
       user: {
         id: user.id,
         userName: user.userName,
@@ -56,8 +67,14 @@ export class UserResolver {
   }
 
   @Query(() => UserModel, { nullable: true })
-  async autoLogin(): Promise<UserModel | null> {
-    // Update with auth using jwt
-    return null;
+  @UseGuards(JwtAuthGaurd)
+  autoLogin(@CurrentUser() user: User): UserModel {
+    return {
+      id: user.id,
+      userName: user.userName,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }

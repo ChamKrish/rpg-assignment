@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { HelloWorldResolver } from './hello-world/hello-world.resolver';
 import { HelloWorldService } from './hello-world/hello-world.service';
 import { User } from './user/entity/user.entity';
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
       playground: true, // Only for development
       introspection: true, // Only for development
     }),
+    AuthModule,
     UserModule,
   ],
   controllers: [AppController],

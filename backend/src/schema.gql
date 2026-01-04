@@ -2,10 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type HelloWorldModel {
-  value: String!
-}
-
 type UserModel {
   id: ID!
   userName: String!
@@ -22,6 +18,10 @@ scalar DateTime
 type AuthPayload {
   token: String!
   user: UserModel!
+}
+
+type HelloWorldModel {
+  value: String!
 }
 
 type Query {
