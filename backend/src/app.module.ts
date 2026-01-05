@@ -25,6 +25,23 @@ import { UserModule } from './user/user.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true, // Only for development
       introspection: true, // Only for development
+      formatError: (error) => {
+        const original = error.extensions?.originalError as
+          | { message?: string | string[] }
+          | undefined;
+
+        const message =
+          (Array.isArray(original?.message)
+            ? original?.message?.[0]
+            : typeof original?.message === 'string'
+              ? original.message
+              : undefined) ?? error.message;
+
+        return {
+          ...error,
+          message,
+        };
+      },
     }),
     AuthModule,
     UserModule,

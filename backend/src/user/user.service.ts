@@ -18,7 +18,10 @@ export class UserService {
     email: string,
     password: string,
   ): Promise<User> {
-    const isExistingUser = await this.findByEmail(email);
+    const isExistingUser = await Promise.all([
+      this.findByEmail(email),
+      this.findByUsername(email),
+    ]);
     if (isExistingUser) {
       throw new ConflictException('User already exists');
     }
@@ -35,6 +38,10 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async findByUsername(userName: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { userName } });
   }
 
   async findById(id: string): Promise<User | null> {
