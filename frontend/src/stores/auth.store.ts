@@ -16,13 +16,13 @@ interface AuthPayload {
   user: User
 }
 
-interface RegisterPayload {
+export interface RegisterPayload {
   userName: string
   email: string
   password: string
 }
 
-interface LoginPayload {
+export interface LoginPayload {
   email: string
   password: string
 }
