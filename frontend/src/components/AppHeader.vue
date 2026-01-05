@@ -57,6 +57,12 @@ const emit = defineEmits<{
   text-decoration: none;
 }
 
+.brand:hover {
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
 .spacer {
   flex: 1;
 }

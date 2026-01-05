@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { RouteName } from '@/router/route-names'
 import { useAuthStore, type LoginPayload } from '@/stores/auth.store'
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 const auth = useAuthStore()
 const router = useRouter()
 
 const loginPayload = reactive<LoginPayload>({ email: '', password: '' })
+
+onMounted(() => {
+  auth.resetError()
+})
 
 async function login() {
   const res = await auth.login(loginPayload)
