@@ -1,0 +1,76 @@
+import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
+import { Repository } from 'typeorm';
+import { User } from './entity/user.entity';
+
+@Injectable()
+export class UserService {
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private authService: AuthService,
+  ) {}
+
+  async create(
+    userName: string,
+    email: string,
+    password: string,
+  ): Promise<User> {
+    const isExistingUser = await Promise.all([
+      this.findByEmail(email),
+      this.findByUsername(email),
+    ]);
+    if (isExistingUser) {
+      throw new ConflictException('User already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = this.userRepository.create({
+      userName,
+      email,
+      password: hashedPassword,
+    });
+
+    return await this.userRepository.save(user);
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async findByUsername(userName: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { userName } });
+  }
+
+  async findById(id: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async validatePassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(password, hashedPassword);
+  }
+
+  async getValidUserToken(user: User): Promise<string> {
+    if (user.token) {
+      const validatedToken = this.authService.validateToken(user.token);
+      if (validatedToken) {
+        const now = Date.now() / 1000;
+        if (validatedToken.exp > now) {
+          return user.token;
+        }
+      }
+    }
+
+    const newToken = this.authService.generateToken(user);
+    await this.userRepository.update(user.id, {
+      token: newToken,
+    });
+
+    return newToken;
+  }
+}
