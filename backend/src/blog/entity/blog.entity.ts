@@ -16,6 +16,9 @@ export class Blog {
   @Column()
   content: string;
 
+  @Column()
+  authorId: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }

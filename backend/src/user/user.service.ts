@@ -18,10 +18,11 @@ export class UserService {
     email: string,
     password: string,
   ): Promise<User> {
-    const isExistingUser = await Promise.all([
+    const existingUsers = await Promise.all([
       this.findByEmail(email),
-      this.findByUsername(email),
+      this.findByUsername(userName),
     ]);
+    const isExistingUser = existingUsers.some((user) => !!user);
     if (isExistingUser) {
       throw new ConflictException('User already exists');
     }
