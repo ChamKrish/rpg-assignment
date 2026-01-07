@@ -19,8 +19,8 @@ export class BlogResolver {
   @Query(() => [BlogModel])
   @UseGuards(JwtAuthGaurd)
   async blogs(
-    @Args('filter', { nullable: true }) filter?: BlogFilterInput,
+    @Args('filters', { nullable: true }) filters?: BlogFilterInput,
   ): Promise<BlogModel[]> {
-    return await this.blogService.findAll(filter);
+    return await this.blogService.findAll(filters);
   }
 }

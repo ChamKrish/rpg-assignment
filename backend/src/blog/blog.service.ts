@@ -20,11 +20,11 @@ export class BlogService {
     return await this.blogRepository.save(blog);
   }
 
-  async findAll(filter?: BlogFilterInput): Promise<Blog[]> {
-    const search = filter?.search?.trim();
+  async findAll(filters?: BlogFilterInput): Promise<Blog[]> {
+    const search = filters?.search?.trim();
     const createdAt = Between(
-      filter?.createdAtGe ?? new Date(0),
-      filter?.createdAtLe ?? new Date(Date.now()),
+      filters?.createdAtGe ?? new Date(0),
+      filters?.createdAtLe ?? new Date(Date.now()),
     );
     const createdAtFilter = createdAt ? { createdAt } : {};
 

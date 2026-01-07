@@ -34,7 +34,7 @@ type HelloWorldModel {
 type Query {
   sayHello: HelloWorldModel!
   autoLogin: UserModel
-  blogs(filter: BlogFilterInput): [BlogModel!]!
+  blogs(filters: BlogFilterInput): [BlogModel!]!
 }
 
 input BlogFilterInput {
