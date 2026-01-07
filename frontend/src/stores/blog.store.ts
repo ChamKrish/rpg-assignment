@@ -23,10 +23,11 @@ export const useBlogStore = defineStore('blog', () => {
   const blogs = ref<Blog[]>([])
   const loading = ref<boolean>(false)
   const error = ref<string | null>(null)
+  const createBlogError = ref<string | null>(null)
 
   async function createBlog(input: BlogPayload) {
     loading.value = true
-    error.value = null
+    createBlogError.value = null
 
     try {
       const res = await apolloClient.mutate<{ createBlog: Blog }>({
@@ -41,7 +42,7 @@ export const useBlogStore = defineStore('blog', () => {
       return true
     } catch (err: unknown) {
       if (err instanceof Error) {
-        error.value = err.message
+        createBlogError.value = err.message
       }
       return false
     } finally {
@@ -57,6 +58,7 @@ export const useBlogStore = defineStore('blog', () => {
       const res = await apolloClient.query<{ blogs: Blog[] }>({
         query: BLOGS_QUERY,
         variables: { filters },
+        fetchPolicy: 'network-only'
       })
       const payload = res.data.blogs
       if (!payload) {
@@ -79,6 +81,7 @@ export const useBlogStore = defineStore('blog', () => {
     blogs,
     loading,
     error,
+    createBlogError,
     getBlogs,
     createBlog,
   }
