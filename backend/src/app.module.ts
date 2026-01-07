@@ -6,6 +6,8 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { BlogModule } from './blog/blog.module';
+import { Blog } from './blog/entity/blog.entity';
 import { HelloWorldResolver } from './hello-world/hello-world.resolver';
 import { HelloWorldService } from './hello-world/hello-world.service';
 import { User } from './user/entity/user.entity';
@@ -16,7 +18,7 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'rpg.db',
-      entities: [User],
+      entities: [User, Blog],
       synchronize: true, // Only for development
       logging: true, // For debugging
     }),
@@ -45,6 +47,7 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     UserModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService, HelloWorldResolver, HelloWorldService],

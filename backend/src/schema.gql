@@ -20,6 +20,13 @@ type AuthPayload {
   user: UserModel!
 }
 
+type BlogModel {
+  id: ID!
+  title: String!
+  content: String!
+  createdAt: DateTime!
+}
+
 type HelloWorldModel {
   value: String!
 }
@@ -27,11 +34,19 @@ type HelloWorldModel {
 type Query {
   sayHello: HelloWorldModel!
   autoLogin: UserModel
+  blogs(filters: BlogFilterInput): [BlogModel!]!
+}
+
+input BlogFilterInput {
+  search: String
+  createdAtGe: DateTime
+  createdAtLe: DateTime
 }
 
 type Mutation {
   register(input: RegisterInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
+  createBlog(input: CreateBlogInput!): BlogModel!
 }
 
 input RegisterInput {
@@ -43,4 +58,9 @@ input RegisterInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateBlogInput {
+  title: String!
+  content: String!
 }
