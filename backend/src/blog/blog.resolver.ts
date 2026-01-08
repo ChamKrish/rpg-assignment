@@ -18,7 +18,17 @@ export class BlogResolver {
     @Args('input') input: CreateBlogInput,
     @CurrentUser() user: User,
   ): Promise<BlogModel> {
-    return await this.blogService.create(user.id, input.title, input.content);
+    const blog = await this.blogService.create(
+      user.id,
+      input.title,
+      input.content,
+    );
+    const blogResp = {
+      ...blog,
+      authorId: blog.authorId,
+      authorName: blog.author.userName,
+    };
+    return blogResp;
   }
 
   @Query(() => [BlogModel])
@@ -27,6 +37,11 @@ export class BlogResolver {
     @CurrentUser() user: User,
     @Args('filters', { nullable: true }) filters?: BlogFilterInput,
   ): Promise<BlogModel[]> {
-    return await this.blogService.findAll(user.id, filters);
+    const blogs = await this.blogService.findAll(user.id, filters);
+    return blogs.map((blog) => ({
+      ...blog,
+      authorName: blog.author.userName,
+    }));
+  }
   }
 }

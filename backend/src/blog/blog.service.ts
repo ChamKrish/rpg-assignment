@@ -31,8 +31,11 @@ export class BlogService {
       filters?.createdAtGe ?? new Date(0),
       filters?.createdAtLe ?? new Date(Date.now()),
     );
-    const createdAtFilter = createdAt ? { createdAt } : {};
-    const baseFilter = { authorId, ...createdAtFilter };
+    const baseFilter = createdAt ? { createdAt } : {};
+
+    if (filters?.createdByMe) {
+      baseFilter['authorId'] = authorId;
+    }
 
     return await this.blogRepository.find({
       where: search
@@ -42,6 +45,7 @@ export class BlogService {
           ]
         : baseFilter,
       order: { createdAt: 'DESC' },
+      relations: { author: true },
     });
   }
 }

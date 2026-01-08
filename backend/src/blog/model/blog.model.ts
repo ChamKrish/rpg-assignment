@@ -13,4 +13,10 @@ export class BlogModel {
 
   @Field()
   createdAt: Date;
+
+  @Field()
+  authorId: string;
+
+  @Field()
+  authorName: string;
 }

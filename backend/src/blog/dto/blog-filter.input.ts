@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class BlogFilterInput {
@@ -20,4 +20,9 @@ export class BlogFilterInput {
   @Type(() => Date)
   @IsDate()
   createdAtLe?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  createdByMe?: boolean;
 }
