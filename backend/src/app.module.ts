@@ -27,6 +27,9 @@ import { UserModule } from './user/user.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true, // Only for development
       introspection: true, // Only for development
+      subscriptions: {
+        'graphql-ws': true,
+      },
       formatError: (error) => {
         const original = error.extensions?.originalError as
           | { message?: string | string[] }

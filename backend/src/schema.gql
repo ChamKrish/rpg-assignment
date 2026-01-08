@@ -67,3 +67,7 @@ input CreateBlogInput {
   title: String!
   content: String!
 }
+
+type Subscription {
+  blogPublished: BlogModel!
+}
