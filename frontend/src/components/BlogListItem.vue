@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <li class="container">
-    <div class="date">{{ formatDate(blog.createdAt) }}</div>
+    <div class="date">{{ blog.authorName }} - {{ formatDate(blog.createdAt) }}</div>
     <div class="title">{{ blog.title }}</div>
     <div class="content">{{ blog.content }}</div>
   </li>

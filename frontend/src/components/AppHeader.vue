@@ -38,7 +38,7 @@ const emit = defineEmits<{
 
 <style scoped>
 .header {
-  padding: 12px 16px;
+  padding: 12px 16px 0px 16px;
   background: var(--color-background);
 }
 

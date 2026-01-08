@@ -6,6 +6,8 @@ const BLOG_FIELDS_FRAGMENT = gql`
     title
     content
     createdAt
+    authorId
+    authorName
   }
 `
 export const CREATE_BLOG_MUTATION = gql`

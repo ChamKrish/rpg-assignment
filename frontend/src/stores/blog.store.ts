@@ -11,12 +11,15 @@ export interface BlogPayload {
 export interface Blog extends BlogPayload {
   id: string
   createdAt: string
+  authorId: string
+  authorName: string
 }
 
 interface BlogFilters {
   search?: string
   createdAtGe?: string
   createdAtLe?: string
+  createdByMe?: boolean
 }
 
 export const useBlogStore = defineStore('blog', () => {
