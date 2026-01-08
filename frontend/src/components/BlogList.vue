@@ -20,6 +20,13 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => blogStore.toast,
+  (toast) => {
+    if (toast) void fetchBlogs()
+  },
+)
+
 watch(isModalOpen, (open) => {
   if (!open) blogStore.createBlogError = null
 })

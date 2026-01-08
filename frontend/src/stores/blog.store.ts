@@ -1,7 +1,8 @@
 import { apolloClient } from '@/config/apollo-client'
-import { BLOGS_QUERY, CREATE_BLOG_MUTATION } from '@/graphql/blog'
+import { BLOG_PUBLISHED_SUBSCRIPTION, BLOGS_QUERY, CREATE_BLOG_MUTATION } from '@/graphql/blog'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useAuthStore } from './auth.store'
 
 export interface BlogPayload {
   title: string
@@ -23,10 +24,25 @@ interface BlogFilters {
 }
 
 export const useBlogStore = defineStore('blog', () => {
+  const authStore = useAuthStore()
+
   const blogs = ref<Blog[]>([])
   const loading = ref<boolean>(false)
   const error = ref<string | null>(null)
   const createBlogError = ref<string | null>(null)
+  const toast = ref<string | null>(null)
+
+  let toastTimer: number | null = null
+  let sub: { unsubscribe: () => void } | null = null
+
+  function showToast(msg: string, interval = 3000) {
+    toast.value = msg
+    if (toastTimer) clearTimeout(toastTimer)
+    toastTimer = setTimeout(() => {
+      toast.value = null
+      toastTimer = null
+    }, interval)
+  }
 
   async function createBlog(input: BlogPayload) {
     loading.value = true
@@ -61,7 +77,7 @@ export const useBlogStore = defineStore('blog', () => {
       const res = await apolloClient.query<{ blogs: Blog[] }>({
         query: BLOGS_QUERY,
         variables: { filters },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
       })
       const payload = res.data.blogs
       if (!payload) {
@@ -80,12 +96,42 @@ export const useBlogStore = defineStore('blog', () => {
     }
   }
 
+  function startBlogPublishedSubscription() {
+    if (sub) return
+    sub = apolloClient
+      .subscribe<{ blogPublished: Blog }>({ query: BLOG_PUBLISHED_SUBSCRIPTION })
+      .subscribe({
+        next: ({ data }) => {
+          const blog = data?.blogPublished
+          if (!blog) return
+          const isAuthorCurrentUser = authStore.user?.id === blog.authorId
+          showToast(
+            isAuthorCurrentUser
+              ? `Successfully published blog: ${blog.title}`
+              : `${blog.authorName} published a new blog: ${blog.title}`,
+          )
+        },
+        error: (err) => {
+          console.error('blogPublished subscription error', err)
+        },
+      })
+  }
+
+  function stopBlogPublishedSubscription() {
+    sub?.unsubscribe()
+    sub = null
+  }
+
   return {
     blogs,
     loading,
     error,
     createBlogError,
+    toast,
+    showToast,
     getBlogs,
     createBlog,
+    startBlogPublishedSubscription,
+    stopBlogPublishedSubscription,
   }
 })

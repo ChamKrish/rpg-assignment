@@ -27,3 +27,12 @@ export const BLOGS_QUERY = gql`
   }
   ${BLOG_FIELDS_FRAGMENT}
 `
+
+export const BLOG_PUBLISHED_SUBSCRIPTION = gql`
+  subscription BlogPublished {
+    blogPublished {
+      ...BlogFields
+    }
+  }
+  ${BLOG_FIELDS_FRAGMENT}
+`
