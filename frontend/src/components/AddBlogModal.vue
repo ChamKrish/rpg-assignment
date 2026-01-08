@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { BlogPayload } from '@/stores/blog.store'
-import { ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import Close from './icons/Close.vue'
 
 const props = defineProps<{
@@ -25,6 +25,19 @@ watch(
     }
   },
 )
+
+onMounted(() => {
+  window.addEventListener('beforeunload', beforeUnload)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('beforeunload', beforeUnload)
+})
+
+function beforeUnload(e: BeforeUnloadEvent) {
+  if ((!blog.value.title && !blog.value.content)) return
+  e.preventDefault()
+}
 
 function close() {
   emit('update:modelValue', false)
