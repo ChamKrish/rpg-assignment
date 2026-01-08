@@ -26,7 +26,7 @@ export class BlogResolver {
     const blogResp = {
       ...blog,
       authorId: blog.authorId,
-      authorName: blog.author.userName,
+      authorName: blog.author?.userName ?? '',
     };
     return blogResp;
   }
@@ -40,7 +40,7 @@ export class BlogResolver {
     const blogs = await this.blogService.findAll(user.id, filters);
     return blogs.map((blog) => ({
       ...blog,
-      authorName: blog.author.userName,
+      authorName: blog.author?.userName ?? '',
     }));
   }
   }

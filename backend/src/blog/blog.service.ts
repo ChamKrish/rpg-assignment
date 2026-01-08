@@ -16,13 +16,16 @@ export class BlogService {
     title: string,
     content: string,
   ): Promise<Blog> {
-    const blog = this.blogRepository.create({
+    const blog = await this.blogRepository.save({
       title,
       content,
       authorId,
     });
 
-    return await this.blogRepository.save(blog);
+    return await this.blogRepository.findOneOrFail({
+      where: { id: blog.id },
+      relations: { author: true },
+    });
   }
 
   async findAll(authorId: string, filters?: BlogFilterInput): Promise<Blog[]> {
