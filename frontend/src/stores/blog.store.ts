@@ -35,7 +35,7 @@ export const useBlogStore = defineStore('blog', () => {
   let toastTimer: number | null = null
   let sub: { unsubscribe: () => void } | null = null
 
-  function showToast(msg: string, interval = 3000) {
+  function showToast(msg: string, interval = 8000) {
     toast.value = msg
     if (toastTimer) clearTimeout(toastTimer)
     toastTimer = setTimeout(() => {
