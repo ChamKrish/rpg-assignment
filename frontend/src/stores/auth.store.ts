@@ -2,6 +2,7 @@ import { apolloClient } from '@/config/apollo-client'
 import { AUTO_LOGIN_QUERY, LOGIN_MUTATION, REGISTER_MUTATION } from '@/graphql/auth'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useBlogStore } from './blog.store'
 
 interface User {
   id: string
@@ -50,6 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     error.value = null
     localStorage.removeItem('token')
+    useBlogStore().stopBlogPublishedSubscription()
     await apolloClient.clearStore()
   }
 

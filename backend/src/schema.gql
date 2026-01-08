@@ -25,6 +25,8 @@ type BlogModel {
   title: String!
   content: String!
   createdAt: DateTime!
+  authorId: String!
+  authorName: String!
 }
 
 type HelloWorldModel {
@@ -41,6 +43,7 @@ input BlogFilterInput {
   search: String
   createdAtGe: DateTime
   createdAtLe: DateTime
+  createdByMe: Boolean
 }
 
 type Mutation {
@@ -63,4 +66,8 @@ input LoginInput {
 input CreateBlogInput {
   title: String!
   content: String!
+}
+
+type Subscription {
+  blogPublished: BlogModel!
 }

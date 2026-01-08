@@ -6,6 +6,8 @@ const BLOG_FIELDS_FRAGMENT = gql`
     title
     content
     createdAt
+    authorId
+    authorName
   }
 `
 export const CREATE_BLOG_MUTATION = gql`
@@ -20,6 +22,15 @@ export const CREATE_BLOG_MUTATION = gql`
 export const BLOGS_QUERY = gql`
   query Blogs($filters: BlogFilterInput) {
     blogs(filters: $filters) {
+      ...BlogFields
+    }
+  }
+  ${BLOG_FIELDS_FRAGMENT}
+`
+
+export const BLOG_PUBLISHED_SUBSCRIPTION = gql`
+  subscription BlogPublished {
+    blogPublished {
       ...BlogFields
     }
   }
