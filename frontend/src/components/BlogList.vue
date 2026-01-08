@@ -43,7 +43,7 @@ async function handleAddBlog(payload: BlogPayload) {
 <template>
   <section class="container">
     <div class="header">
-      <h2>Latest posts from the community</h2>
+      <h2>Latest blogs from the community</h2>
       <button class="btn" :class="{ selected: areMyBlogs }" @click="areMyBlogs = !areMyBlogs">
         My blogs
       </button>
